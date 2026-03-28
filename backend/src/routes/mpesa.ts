@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import prisma from '../utils/prisma';
 import { updateTrustScore } from '../services/trustScore';
-import { getAccessToken } from '../services/mpesa';
+import { getAccessToken, stkPush, b2cPayout, checkTransactionStatus } from '../services/mpesa';
 
 export const mpesaRouter = Router();
 
@@ -137,6 +137,21 @@ mpesaRouter.get('/transactions', async (_req, res) => {
       take: 20,
     });
     res.json(txs);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Verify transaction status via Daraja
+mpesaRouter.post('/verify/:id', async (req, res) => {
+  try {
+    const id = req.params.id as string;
+    const tx = await prisma.mpesaTransaction.findUnique({ where: { id } });
+    if (!tx) return res.status(404).json({ error: 'Transaction not found' });
+    if (!tx.mpesaReceiptNo && !tx.checkoutRequestId) return res.status(400).json({ error: 'No receipt or checkout ID to verify' });
+
+    const result = await checkTransactionStatus(tx.mpesaReceiptNo || tx.checkoutRequestId!);
+    res.json({ result });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
   }

@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import prisma from '../utils/prisma';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { b2cPayout } from '../services/mpesa';
+import { sendSMS } from '../services/sms';
 
 export const chamaRouter = Router();
 chamaRouter.use(authenticate);
@@ -96,5 +98,56 @@ chamaRouter.post('/:id/rotation', async (req: AuthRequest, res) => {
     res.json(rotations);
   } catch {
     res.status(500).json({ error: 'Failed to set rotation' });
+  }
+});
+
+// Treasurer: trigger B2C payout to next rotation member now
+chamaRouter.post('/:id/payout-now', async (req: AuthRequest, res) => {
+  try {
+    const chamaId = req.params.id as string;
+
+    const member = await prisma.chamaMember.findFirst({ where: { chamaId, userId: req.userId! } });
+    if (!member || member.role === 'MEMBER') return res.status(403).json({ error: 'Only admin/treasurer can trigger payouts' });
+
+    const chama = await prisma.chama.findUnique({
+      where: { id: chamaId },
+      include: { members: true },
+    });
+    if (!chama) return res.status(404).json({ error: 'Chama not found' });
+
+    const nextRotation = await prisma.rotation.findFirst({
+      where: { chamaId, status: 'PENDING' },
+      orderBy: { position: 'asc' },
+    });
+    if (!nextRotation) return res.status(400).json({ error: 'No pending rotation entry' });
+
+    const recipient = await prisma.user.findUnique({ where: { id: nextRotation.memberId } });
+    if (!recipient) return res.status(404).json({ error: 'Recipient not found' });
+
+    const payoutAmount = Number(chama.contributionAmount) * chama.members.length;
+    const result = await b2cPayout(
+      recipient.phone.replace(/^0/, '254'),
+      payoutAmount,
+      `Merry-go-round payout from ${chama.name}`
+    );
+
+    await prisma.rotation.update({
+      where: { id: nextRotation.id },
+      data: { payoutAmount },
+    });
+
+    await prisma.mpesaTransaction.create({
+      data: {
+        transactionType: 'B2C', phone: recipient.phone, amount: payoutAmount,
+        status: 'PENDING', conversationId: result.ConversationID,
+        relatedId: nextRotation.id, relatedType: 'PAYOUT',
+      },
+    });
+
+    await sendSMS(recipient.phone, `ChamaPesa: KES ${payoutAmount} payout from "${chama.name}" is on its way! 🎉`).catch(() => {});
+
+    res.json({ message: 'B2C payout initiated', recipient: recipient.name, amount: payoutAmount, conversationId: result.ConversationID });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
   }
 });

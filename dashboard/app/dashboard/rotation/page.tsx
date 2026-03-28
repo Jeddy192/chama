@@ -6,7 +6,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PageSpinner } from '@/components/ui/Spinner';
-import { RotateCcw, GripVertical } from 'lucide-react';
+import { RotateCcw, GripVertical, Send } from 'lucide-react';
 
 interface RotationEntry {
   id: string; position: number; status: string;
@@ -31,6 +31,8 @@ export default function RotationPage() {
   const [saving, setSaving] = useState(false);
   const [order, setOrder] = useState<Member[]>([]);
   const [editing, setEditing] = useState(false);
+  const [payingOut, setPayingOut] = useState(false);
+  const [payoutMsg, setPayoutMsg] = useState<{ text: string; ok: boolean } | null>(null);
 
   const chama = getChama();
 
@@ -56,6 +58,19 @@ export default function RotationPage() {
       await api.post(`/api/chamas/${chama.id}/rotation`, { memberIds: order.map(m => m.user.id) });
       setEditing(false);
     } catch {} finally { setSaving(false); }
+  }
+
+  async function payoutNow() {
+    if (!chama) return;
+    setPayingOut(true); setPayoutMsg(null);
+    try {
+      const res = await api.post<{ recipient: string; amount: number }>(`/api/chamas/${chama.id}/payout-now`, {});
+      setPayoutMsg({ text: `B2C payout of ${fmt(res.amount)} sent to ${res.recipient}`, ok: true });
+      const c = await api.get<any>(`/api/chamas/${chama.id}`);
+      setRotation(c.rotations || []);
+    } catch (e: any) {
+      setPayoutMsg({ text: e.message, ok: false });
+    } finally { setPayingOut(false); }
   }
 
   function moveUp(i: number) {
@@ -90,12 +105,22 @@ export default function RotationPage() {
               <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>Cancel</Button>
             </>
           ) : (
-            <Button size="sm" variant="secondary" onClick={() => setEditing(true)}>
-              <RotateCcw size={14} /> Edit order
-            </Button>
+            <>
+              <Button size="sm" variant="secondary" onClick={() => setEditing(true)}>
+                <RotateCcw size={14} /> Edit order
+              </Button>
+              <Button size="sm" onClick={payoutNow} loading={payingOut}>
+                <Send size={13} /> Pay out now
+              </Button>
+            </>
           )}
         </div>
       </div>
+      {payoutMsg && (
+        <p className={`mb-4 text-sm ${payoutMsg.ok ? 'text-[var(--success)]' : 'text-[var(--danger)]'}`}>
+          {payoutMsg.text}
+        </p>
+      )}
 
       <div className="flex flex-col gap-2">
         {order.map((member, i) => {
