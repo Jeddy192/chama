@@ -18,6 +18,13 @@ PROGRESS.md
 # Build artifacts
 tsconfig.tsbuildinfo
 
+# Terraform
+infra/.terraform/
+infra/*.tfstate*
+infra/.terraform.lock.hcl
+*.auto.tfvars
+secrets.tfvars
+
 # Kiro internals
 .kiro
 .impeccable.md
