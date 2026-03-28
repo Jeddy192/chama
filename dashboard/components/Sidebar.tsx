@@ -35,6 +35,8 @@ const MEMBER_NAV = [
 interface Chama { id: string; name: string; myRole: string; }
 
 interface NavItem { href: string; icon: React.ElementType; label: string; soon?: boolean; }
+
+interface SidebarProps {
   role: 'treasurer' | 'member';
   chamaName?: string;
 }
