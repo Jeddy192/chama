@@ -19,11 +19,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       if (admin) {
         setChama(admin);
         localStorage.setItem('cp_chama', JSON.stringify(admin));
-      } else if (chamas.length > 0) {
-        setChama(chamas[0]);
-        localStorage.setItem('cp_chama', JSON.stringify(chamas[0]));
+      } else {
+        // No admin/treasurer role — redirect to member view
+        router.replace('/member');
       }
-    }).catch(() => {});
+    }).catch(() => { router.replace('/member'); });
   }, [router]);
 
   return (
