@@ -1,0 +1,23 @@
+# Dependencies
+node_modules
+dist
+.next
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Scratch files
+*.txt
+notgood.txt
+ideas.txt
+ChamaPesa_Features.md
+PROGRESS.md
+
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# Kiro internals
+.kiro
+.impeccable.md

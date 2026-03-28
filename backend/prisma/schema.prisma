@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TREASURER
+  MEMBER
+}
+
+enum ContributionStatus {
+  PENDING
+  PAID
+  MISSED
+  PARTIAL
+}
+
+enum PayoutStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum LoanStatus {
+  REQUESTED
+  VOTING
+  APPROVED
+  DISBURSED
+  REPAYING
+  REPAID
+  REJECTED
+  DEFAULTED
+}
+
+enum MotionType {
+  LOAN_APPROVAL
+  REMOVE_MEMBER
+  RULE_CHANGE
+  POOL_DISBURSEMENT
+  CUSTOM
+}
+
+enum MotionStatus {
+  OPEN
+  PASSED
+  FAILED
+  EXPIRED
+}
+
+enum PoolWithdrawalMethod {
+  VOTE
+  ADMIN_APPROVAL
+  AUTO_AT_TARGET
+}
+
+enum Frequency {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+}
+
+model User {
+  id        String   @id @default(uuid())
+  phone     String   @unique
+  name      String
+  pin       String
+  createdAt DateTime @default(now())
+
+  memberships   ChamaMember[]
+  contributions Contribution[]
+  loans         Loan[]
+  votes         Vote[]
+}
+
+model Chama {
+  id                   String    @id @default(uuid())
+  name                 String
+  contributionAmount   Decimal
+  frequency            Frequency
+  nextContributionDate DateTime
+  penaltyRate          Decimal   @default(0.1)
+  createdAt            DateTime  @default(now())
+
+  members       ChamaMember[]
+  contributions Contribution[]
+  rotations     Rotation[]
+  pools         Pool[]
+  loans         Loan[]
+  motions       Motion[]
+}
+
+model ChamaMember {
+  id         String   @id @default(uuid())
+  userId     String
+  chamaId    String
+  role       Role     @default(MEMBER)
+  trustScore Int      @default(50)
+  joinedAt   DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  chama Chama @relation(fields: [chamaId], references: [id])
+
+  @@unique([userId, chamaId])
+}
+
+model Pool {
+  id                String              @id @default(uuid())
+  chamaId           String
+  name              String
+  targetAmount      Decimal?
+  contributionSplit Decimal
+  withdrawalMethod  PoolWithdrawalMethod @default(VOTE)
+  lockMonths        Int                  @default(0)
+  balance           Decimal              @default(0)
+  annualInterestRate Decimal             @default(0.12)
+  interestEarned    Decimal              @default(0)
+  lastInterestDate  DateTime?
+  createdAt         DateTime             @default(now())
+
+  chama Chama @relation(fields: [chamaId], references: [id])
+}
+
+model Contribution {
+  id              String             @id @default(uuid())
+  userId          String
+  chamaId         String
+  amount          Decimal
+  status          ContributionStatus @default(PENDING)
+  mpesaReceiptNo  String?
+  transactionDate DateTime?
+  dueDate         DateTime
+  createdAt       DateTime           @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  chama Chama @relation(fields: [chamaId], references: [id])
+}
+
+model Rotation {
+  id             String       @id @default(uuid())
+  chamaId        String
+  memberId       String
+  position       Int
+  status         PayoutStatus @default(PENDING)
+  payoutAmount   Decimal?
+  mpesaReceiptNo String?
+  paidAt         DateTime?
+
+  chama Chama @relation(fields: [chamaId], references: [id])
+}
+
+model Loan {
+  id           String     @id @default(uuid())
+  chamaId      String
+  borrowerId   String
+  amount       Decimal
+  interestRate Decimal    @default(0.1)
+  status       LoanStatus @default(REQUESTED)
+  amountRepaid Decimal    @default(0)
+  disbursedAt  DateTime?
+  dueDate      DateTime?
+  createdAt    DateTime   @default(now())
+
+  chama      Chama           @relation(fields: [chamaId], references: [id])
+  borrower   User            @relation(fields: [borrowerId], references: [id])
+  repayments LoanRepayment[]
+}
+
+model LoanRepayment {
+  id             String   @id @default(uuid())
+  loanId         String
+  amount         Decimal
+  mpesaReceiptNo String?
+  paidAt         DateTime @default(now())
+
+  loan Loan @relation(fields: [loanId], references: [id])
+}
+
+model Motion {
+  id          String       @id @default(uuid())
+  chamaId     String
+  type        MotionType
+  description String
+  status      MotionStatus @default(OPEN)
+  threshold   Decimal      @default(0.51)
+  deadline    DateTime
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+
+  chama Chama  @relation(fields: [chamaId], references: [id])
+  votes Vote[]
+}
+
+model Vote {
+  id       String   @id @default(uuid())
+  motionId String
+  userId   String
+  vote     Boolean
+  votedAt  DateTime @default(now())
+
+  motion Motion @relation(fields: [motionId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([motionId, userId])
+}
+
+model MpesaTransaction {
+  id                String   @id @default(uuid())
+  transactionType   String
+  mpesaReceiptNo    String?  @unique
+  phone             String
+  amount            Decimal
+  status            String
+  resultDesc        String?
+  checkoutRequestId String?
+  conversationId    String?
+  relatedId         String?
+  relatedType       String?
+  createdAt         DateTime @default(now())
+}

@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Brand */
+  --primary:        oklch(52% 0.16 38);
+  --primary-hover:  oklch(46% 0.16 38);
+  --primary-light:  oklch(93% 0.05 38);
+  --primary-muted:  oklch(88% 0.08 38);
+
+  /* Semantic */
+  --success:        oklch(45% 0.14 155);
+  --success-light:  oklch(92% 0.06 155);
+  --warning:        oklch(68% 0.18 75);
+  --warning-light:  oklch(94% 0.07 75);
+  --danger:         oklch(52% 0.20 22);
+  --danger-light:   oklch(93% 0.06 22);
+  --info:           oklch(55% 0.14 240);
+  --info-light:     oklch(93% 0.05 240);
+
+  /* Neutrals — warm-tinted */
+  --gray-50:  oklch(97% 0.01 38);
+  --gray-100: oklch(94% 0.01 38);
+  --gray-200: oklch(89% 0.01 38);
+  --gray-300: oklch(80% 0.01 38);
+  --gray-400: oklch(68% 0.01 38);
+  --gray-500: oklch(55% 0.01 38);
+  --gray-600: oklch(44% 0.01 38);
+  --gray-700: oklch(34% 0.01 38);
+  --gray-800: oklch(24% 0.01 38);
+  --gray-900: oklch(16% 0.02 38);
+
+  /* Surfaces */
+  --bg:         var(--gray-50);
+  --surface:    oklch(99% 0.005 38);
+  --surface-2:  var(--gray-100);
+  --border:     var(--gray-200);
+  --border-strong: var(--gray-300);
+
+  /* Text */
+  --text-primary:   var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-muted:     var(--gray-400);
+
+  /* Easing */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Spacing */
+  --sidebar-w: 240px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+/* Tabular numbers for all data */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+
+/* Focus */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-up {
+  animation: fade-up 400ms var(--ease-out-quart) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 300ms var(--ease-out-quart) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up, .animate-fade-in {
+    animation: none;
+  }
+}
