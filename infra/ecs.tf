@@ -104,7 +104,10 @@ resource "aws_ecs_task_definition" "backend" {
       { name = "MPESA_CONSUMER_SECRET", valueFrom = aws_secretsmanager_secret.app["MPESA_CONSUMER_SECRET"].arn },
       { name = "MPESA_PASSKEY", valueFrom = aws_secretsmanager_secret.app["MPESA_PASSKEY"].arn },
       { name = "MPESA_SHORTCODE", valueFrom = aws_secretsmanager_secret.app["MPESA_SHORTCODE"].arn },
-      { name = "MPESA_ENV", valueFrom = aws_secretsmanager_secret.app["MPESA_ENV"].arn }
+      { name = "MPESA_ENV", valueFrom = aws_secretsmanager_secret.app["MPESA_ENV"].arn },
+      { name = "MPESA_B2C_SHORTCODE", valueFrom = aws_secretsmanager_secret.app["MPESA_B2C_SHORTCODE"].arn },
+      { name = "MPESA_B2C_INITIATOR", valueFrom = aws_secretsmanager_secret.app["MPESA_B2C_INITIATOR"].arn },
+      { name = "MPESA_B2C_PASSWORD", valueFrom = aws_secretsmanager_secret.app["MPESA_B2C_PASSWORD"].arn }
     ]
     logConfiguration = {
       logDriver = "awslogs"

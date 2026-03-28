@@ -9,6 +9,9 @@ locals {
     MPESA_PASSKEY         = var.mpesa_passkey
     MPESA_SHORTCODE       = var.mpesa_shortcode
     MPESA_ENV             = var.mpesa_env
+    MPESA_B2C_SHORTCODE   = var.mpesa_b2c_shortcode
+    MPESA_B2C_INITIATOR   = var.mpesa_b2c_initiator
+    MPESA_B2C_PASSWORD    = var.mpesa_b2c_password
   }
 }
 

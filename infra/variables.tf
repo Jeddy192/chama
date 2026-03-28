@@ -63,3 +63,21 @@ variable "mpesa_env" {
   type        = string
   default     = "sandbox"
 }
+
+variable "mpesa_b2c_shortcode" {
+  description = "M-Pesa B2C shortcode"
+  type        = string
+  default     = "600000"
+}
+
+variable "mpesa_b2c_initiator" {
+  description = "M-Pesa B2C initiator name"
+  type        = string
+  default     = "testapi"
+}
+
+variable "mpesa_b2c_password" {
+  description = "M-Pesa B2C security credential"
+  type        = string
+  sensitive   = true
+}
