@@ -44,7 +44,7 @@ Admin/Treasurer accounts access the full dashboard. Member accounts access the m
 ![Dashboardview](screenshots/Dashboard_View_(adminview).jpeg)
 ![ContributionPage](screenshots/Contributions_page_with_collection_status.jpeg)
 ![MembersPageWithTrustScores](screenshots/Member_page_with_trust_scores.jpeg)
-![Merrygoroundpage](Merrygoround_page.jpeg)
+![Merrygoroundpage](screenshots/Merrygoround_page.jpeg)
 ![Loanspage](screenshots/loans_page.jpeg)
 
 
