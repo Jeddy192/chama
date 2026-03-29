@@ -40,12 +40,12 @@ ChamaPesa digitizes the entire chama lifecycle:
 Admin/Treasurer accounts access the full dashboard. Member accounts access the member portal.
 
 ## Screenshots
-![Landingpage](landing_page.jpeg)
-![Dashboardview](Dashboard_View_(adminview).jpeg)
-![ContributionPage](Contributions_page_with_collection_status.jpeg)
-![MembersPageWithTrustScores](Member_page_with_trust_scores.jpeg)
+![Landingpage](screenshots/landing_page.jpeg)
+![Dashboardview](screenshots/Dashboard_View_(adminview).jpeg)
+![ContributionPage](screenshots/Contributions_page_with_collection_status.jpeg)
+![MembersPageWithTrustScores](screenshots/Member_page_with_trust_scores.jpeg)
 ![Merrygoroundpage](Merrygoround_page.jpeg)
-![Loanspage](loans_page.jpeg)
+![Loanspage](screenshots/loans_page.jpeg)
 
 
 ## Key Features
