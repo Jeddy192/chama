@@ -27,7 +27,7 @@ ChamaPesa digitizes the entire chama lifecycle:
 
 ## Live Demo
 
-🔗 **Live URL:** [https://d3czamd19a4so0.cloudfront.net](https://d3czamd19a4so0.cloudfront.net)
+🔗 **Live URL:** _Coming soon_
 
 ### Demo Credentials
 
@@ -309,6 +309,22 @@ Infrastructure is defined in `infra/` using Terraform. See the deploy instructio
 cd infra && terraform apply -var-file="secrets.tfvars"
 ./deploy.sh
 ```
+
+### CI/CD
+
+Deployments are automated via **GitHub Actions**. Every push to `main` triggers the pipeline at `.github/workflows/deploy.yml`, which:
+
+1. Builds and pushes Docker images to ECR
+2. Rebuilds the dashboard with the production API URL
+3. Forces ECS to redeploy both services
+
+**Required GitHub Secrets:**
+
+| Secret | Description |
+|--------|-------------|
+| `AWS_ACCESS_KEY_ID` | IAM access key with ECR + ECS permissions |
+| `AWS_SECRET_ACCESS_KEY` | IAM secret key |
+| `CLOUDFRONT_DOMAIN` | CloudFront distribution domain (e.g. `d1234abc.cloudfront.net`) |
 
 ## Team
 

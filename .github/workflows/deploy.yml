@@ -22,12 +22,6 @@ jobs:
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Get CloudFront domain for dashboard build
-        id: cf
-        run: |
-          DOMAIN=$(aws cloudfront list-distributions --query "DistributionList.Items[?Comment=='chamapesa — HTTPS via CloudFront'].DomainName | [0]" --output text --region us-west-2)
-          echo "domain=$DOMAIN" >> $GITHUB_OUTPUT
-
       - name: Build & push backend
         run: |
           docker build -t chamapesa-backend ./backend
@@ -37,7 +31,7 @@ jobs:
       - name: Build & push dashboard
         run: |
           docker build \
-            --build-arg NEXT_PUBLIC_API_URL="https://${{ steps.cf.outputs.domain }}" \
+            --build-arg NEXT_PUBLIC_API_URL="https://${{ secrets.CLOUDFRONT_DOMAIN }}" \
             -t chamapesa-dashboard ./dashboard
           docker tag chamapesa-dashboard:latest ${{ steps.ecr.outputs.registry }}/chamapesa-dashboard:latest
           docker push ${{ steps.ecr.outputs.registry }}/chamapesa-dashboard:latest
