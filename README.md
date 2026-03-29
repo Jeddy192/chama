@@ -41,19 +41,17 @@ Admin/Treasurer accounts access the full dashboard. Member accounts access the m
 
 ## Screenshots
 
-_Screenshots to be added_
 
-<!-- 
-Recommended screenshots:
-1. Landing page
-2. Dashboard overview (admin view)
-3. Contributions page with collection status
-4. Members page with trust scores
-5. Rotation/merry-go-round page
-6. Loans page
-7. Anonymous voting/motions
-8. Member portal
--->
+
+
+![chama app landing page](https://github.com/user-attachments/assets/87b98c33-f0e3-46bc-b0d4-087ce24600b8)
+![Contributions page with collection status](https://github.com/user-attachments/assets/eb96c9d0-4e67-46a4-aaf1-74c321fa3911)
+![Dashboard View (admin view)](https://github.com/user-attachments/assets/466b698f-c872-479c-9835-4ef9e8543a2e)
+![loans page](https://github.com/user-attachments/assets/59fd79c9-b063-4936-ac20-50d818889d84)
+![Anonymous voting](https://github.com/user-attachments/assets/2fed9755-ffe9-476e-bac3-1df04c4eac79)
+![Merry-go-round page](https://github.com/user-attachments/assets/14de28a9-4eff-48fb-b002-3254db1fab5e)
+![Member page with trust scores](https://github.com/user-attachments/assets/e3be6b86-9dc1-4403-85b7-22ec46ed2787)
+
 
 ## Key Features
 
