@@ -3,6 +3,13 @@ name: Deploy to AWS
 on:
   push:
     branches: [main]
+    paths:
+      - 'backend/**'
+      - 'dashboard/**'
+      - 'infra/**'
+      - 'deploy.sh'
+      - 'docker-compose.yml'
+      - '.github/workflows/**'
 
 jobs:
   deploy:
