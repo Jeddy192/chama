@@ -27,7 +27,7 @@ ChamaPesa digitizes the entire chama lifecycle:
 
 ## Live Demo
 
-🔗 **Live URL:** _Coming soon_
+🔗 **Live URL:** https://d3czamd19a4so0.cloudfront.net/landing
 
 ### Demo Credentials
 
